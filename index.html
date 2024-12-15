@@ -4,17 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unity + MindAR.js</title>
+
+    <!-- 引入 A-Frame 和 MindAR.js 脚本 -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <!-- 引入 UnityLoader.js，路径需要指向你的 Unity WebGL 构建输出 -->
+    <script src="./Build/UnityLoader.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
 <!-- MindAR.js 的 AR 摄像头 -->
-<a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+<a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;"
+         color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights"
+         vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
     <!-- 目标检测区域 -->
     <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane color="blue" position="0 0 0" height="0.3" width="0.5"></a-plane>
+        <a-plane color="blue" opacity="0.5" position="0 0 0" height="0.3" width="0.5"></a-plane>
     </a-entity>
 </a-scene>
 
@@ -23,15 +29,15 @@
     <canvas id="unity-canvas"></canvas>
 </div>
 
-<!-- 自定义脚本：通信管理 -->
+<!-- 启动 Unity WebGL 并设置交互逻辑 -->
 <script>
     let unityInstance = null;
 
-    // 启动 Unity WebGL
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("DOMContentLoaded", () => {
+        // UnityLoader 启动 Unity 实例
         unityInstance = UnityLoader.instantiate(
-            "unity-canvas",
-            "./Build/UnityWebGL.json", // 替换为 Unity 的导出路径
+            "unity-canvas",      // Canvas 容器 ID
+            "./Build/UnityWebGL.json", // 构建输出的 JSON 路径
             {
                 onProgress: (instance, progress) => {
                     console.log(`Unity 加载进度: ${progress * 100}%`);
@@ -40,7 +46,7 @@
         );
     });
 
-    // MindAR.js 的目标检测逻辑
+    // MindAR.js 的事件监听
     document.querySelector("a-scene").addEventListener("targetFound", () => {
         console.log("目标检测成功，通知 Unity");
         if (unityInstance) {
