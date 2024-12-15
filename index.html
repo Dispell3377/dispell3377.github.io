@@ -1,15 +1,60 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindAR.js Enhanced Example</title>
+    <!-- 引入 A-Frame 和 MindAR.js -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
-<body>
-<a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+<body style="margin: 0; overflow: hidden;">
+<!-- 主场景 -->
+<a-scene
+        mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        embedded
+>
+    <!-- 摄像机 -->
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- 第一个目标，显示 3D 模型 -->
     <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane color="blue" opaciy="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
+        <!-- 替换的 3D 对象 -->
+        <a-box
+                position="0 0 0.1"
+                depth="0.2"
+                height="0.2"
+                width="0.2"
+                color="red"
+                rotation="0 45 0"
+                id="interactive-box"
+        ></a-box>
+
+        <!-- 动态文字 -->
+        <a-text
+                value="点击方块试试!"
+                position="0 0.3 0.1"
+                align="center"
+                color="#FFFFFF"
+                scale="0.5 0.5 0.5"
+        ></a-text>
     </a-entity>
 </a-scene>
+
+<script>
+    // JavaScript 脚本：监听点击事件并触发互动
+    document.addEventListener("DOMContentLoaded", () => {
+        const box = document.querySelector("#interactive-box");
+
+        // 添加点击事件：改变颜色
+        box.addEventListener("click", () => {
+            const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            box.setAttribute("color", randomColor);
+            console.log("方块点击，颜色已更改:", randomColor);
+        });
+    });
+</script>
 </body>
 </html>
